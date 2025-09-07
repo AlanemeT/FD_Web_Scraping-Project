@@ -58,36 +58,46 @@ framedirect_data = []
 product_list = page.find_all("div", class_='prod-holder')
 print(f"Found {len(product_list)} products")
 
+
 for plist in product_list:
     product_info = plist.find('div', class_='prod-image-holder')
+
 
     if product_info:
         brand_name = product_info.find('div', class_='catalog-name')
         brand = brand_name.text if brand_name else None # product brand
 
+
         product_name = product_info.find('div', class_='product_name')
         pname = product_name.text if product_name else None
+
+        if not brand or not pname:
+            continue
 
         # for price
         price_cnt = product_info.find('div', class_='prod-price-wrap')
         if price_cnt:
             # Former Price
             former_price_tag = price_cnt.find('div', class_='prod-catalog-retail-price')
-            former_price = former_price_tag.text if former_price_tag else None
+            former_price = former_price_tag.text.strip().replace("$", "") if former_price_tag else None
+            former_price =float(former_price) if former_price else None
             # Current Price
             current_price_tag = price_cnt.find('div', class_='prod-aslowas')
-            current_price = current_price_tag.text if current_price_tag else None
+            current_price = current_price_tag.text .strip().replace("$", "") if current_price_tag else None
+            current_price =float(current_price) if current_price else None
         else:
             former_price = current_price = None
     else:
         brand = pname = former_price = current_price = None 
         # Automatically applies missing value, if the product info is not available.
+
     
     discount_tag = plist.find('div', class_='frame-discount size-11')
     discount = discount_tag.text if discount_tag else None
+    discount = discount if discount else None
 
     # Assignment: Add the category
-            
+              
     data = {
         'Brand': brand,
         'Product_Name': pname,
